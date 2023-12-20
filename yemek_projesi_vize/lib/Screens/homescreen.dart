@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: screenSize.height * 0.015,
                 ),
                 const Text(
-                  "Ürünler",
+                  "Restorantlar",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: whiteclr,

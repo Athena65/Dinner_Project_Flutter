@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 class BigMeal {
-  int id;
-  String name;
-  String image;
-  String time;
-  String ratting;
+  final int id;
+  final String name;
+  final String image;
+  final String time;
+  final String ratting;
   BigMeal(
       {required this.id,
         required this.name,
