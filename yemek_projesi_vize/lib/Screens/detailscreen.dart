@@ -13,14 +13,15 @@ class DetailScreen extends StatefulWidget {
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
+
 class _DetailScreenState extends State<DetailScreen> {
   int? _value = 1;
-  int total=0;
-  int quantity=1;
+  int total = 0;
+  int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
-    total=widget.details.totalPrice;
+    total = widget.details.totalPrice;
     Size sc = Utils().getScreenSize(); //ekran boyutu
     return Scaffold(
       backgroundColor: backgroundclr,
@@ -53,9 +54,9 @@ class _DetailScreenState extends State<DetailScreen> {
                             color: const Color(0xff757283)),
                         child: const Center(
                             child: Icon(
-                              Icons.favorite_rounded,
-                              color: whiteclr,
-                            )),
+                          Icons.favorite_rounded,
+                          color: whiteclr,
+                        )),
                       ),
                     ),
                   ),
@@ -89,7 +90,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         Text(
                           widget.details.ratting,
                           style:
-                          const TextStyle(fontSize: 12.5, color: whiteclr),
+                              const TextStyle(fontSize: 12.5, color: whiteclr),
                         ),
                       ],
                     ),
@@ -114,22 +115,22 @@ class _DetailScreenState extends State<DetailScreen> {
                               decoration: const BoxDecoration(
                                   color: lbackgroundclr,
                                   shape: BoxShape.circle),
-                              child:  Center(
-                                  child:IconButton(onPressed: (){
-                                    setState(() {
-                                      quantity-=1;
-                                      if(quantity<=0)
-                                      {
-                                        Navigator.pop(context,"Lütfen Sepetinize Ürün Ekleyin");
-                                      }
-                                    });
-
-                                  }, icon: Icon(
-                                    Icons.remove,
-                                    color: whiteclr,
-                                  ),)
-
-                              ),
+                              child: Center(
+                                  child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    quantity -= 1;
+                                    if (quantity <= 0) {
+                                      Navigator.pop(context,
+                                          "Lütfen Sepetinize Ürün Ekleyin");
+                                    }
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.remove,
+                                  color: whiteclr,
+                                ),
+                              )),
                             ),
                             SizedBox(
                               width: sc.width * 0.04,
@@ -151,13 +152,13 @@ class _DetailScreenState extends State<DetailScreen> {
                                   color: lbackgroundclr,
                                   shape: BoxShape.circle),
                               child: Center(
-                                  child: IconButton(onPressed: (){
-                                    setState(() {
-                                      quantity+=1;
-                                    });
-
-                                  },
-                                      icon:Icon(
+                                  child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          quantity += 1;
+                                        });
+                                      },
+                                      icon: Icon(
                                         Icons.add,
                                         color: whiteclr,
                                       ))),
@@ -180,7 +181,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       height: sc.height * 0.015,
                     ),
                     const Text(
-                      "Ek Ürün Seç",
+                      "Ek Ürün Seç(1 Zorunlu)",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -198,7 +199,8 @@ class _DetailScreenState extends State<DetailScreen> {
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage("https://www.makbul.com/Content/global/images/products/4/478/ORG-ketcap-tatli-650-g176.jpg"),
+                                image: NetworkImage(
+                                    "https://teksut.com.tr/wp-content/uploads/2020/02/200ml-ayran.png"),
                               ),
                               color: Color(0xff3A3843),
                               shape: BoxShape.circle),
@@ -207,14 +209,14 @@ class _DetailScreenState extends State<DetailScreen> {
                           width: sc.width * 0.03,
                         ),
                         const Text(
-                          "Ketçap",
+                          "Ayran",
                           style: TextStyle(
                               color: whiteclr,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
-                          width: sc.width * 0.38,
+                          width: sc.width * 0.39,
                         ),
                         Row(
                           children: [
@@ -245,7 +247,8 @@ class _DetailScreenState extends State<DetailScreen> {
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage("https://www.makbul.com/Content/global/images/products/4/479/ORG-mayonez-550-g.jpg"),
+                                image: NetworkImage(
+                                    "https://ceysu.com.tr/wp-content/uploads/2020/10/200-1024x1024.jpg"),
                               ),
                               color: Color(0xff3A3843),
                               shape: BoxShape.circle),
@@ -254,14 +257,14 @@ class _DetailScreenState extends State<DetailScreen> {
                           width: sc.width * 0.03,
                         ),
                         const Text(
-                          "Mayonez",
+                          "Su",
                           style: TextStyle(
                               color: whiteclr,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
-                          width: sc.width * 0.35,
+                          width: sc.width * 0.45,
                         ),
                         Row(
                           children: [
@@ -272,7 +275,8 @@ class _DetailScreenState extends State<DetailScreen> {
                             Radio(
                                 value: 2,
                                 groupValue: _value,
-                                onChanged: (int? value) {//secilen urun degistiginde _value degiskeni
+                                onChanged: (int? value) {
+                                  //secilen urun degistiginde _value degiskeni
                                   //degisir.
                                   setState(() {
                                     _value = value!;
@@ -294,7 +298,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: NetworkImage(
-                                    "https://cdnprod.mopas.com.tr/sys-master-mopascdncontainer/h9f/h7e/8895412011038/858597_0_521Wx521H"),
+                                    "https://cdn.yemek.com/mnresize/1600/1067/uploads/2015/03/havuc-limon-armut-suyu.jpg"),
                               ),
                               color: Color(0xff3A3843),
                               shape: BoxShape.circle),
@@ -303,14 +307,14 @@ class _DetailScreenState extends State<DetailScreen> {
                           width: sc.width * 0.0305,
                         ),
                         const Text(
-                          "BBQ Sos",
+                          "Meyve Suyu",
                           style: TextStyle(
                               color: whiteclr,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
-                          width: sc.width * 0.35,
+                          width: sc.width * 0.27,
                         ),
                         Row(
                           children: [
@@ -335,12 +339,13 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Center(
                       child: Container(
-                        child:ElevatedButton(onPressed: (){
-                          Navigator.pop(context,'Odeme Basarili');
-
-                        },style: ElevatedButton.styleFrom(
-                          primary: primaryclr,
-                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, 'Odeme Basarili');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: primaryclr,
+                          ),
                           child: Container(
                             height: sc.height * 0.06,
                             width: sc.width * 0.75,
@@ -349,16 +354,17 @@ class _DetailScreenState extends State<DetailScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                ((widget.details.totalPrice*quantity)+10).toString(),
+                                ((widget.details.totalPrice * quantity) + 10)
+                                    .toString(),
                                 style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
-                                    color:whiteclr),
+                                    color: whiteclr),
                               ),
                             ),
-                          ),),
+                          ),
+                        ),
                       ),
-
                     ),
                   ],
                 ),

@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Color _iconColor = whiteclr;
   String sonuc="";
   var items = <dynamic>[];
   @override
@@ -81,8 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                           image: const DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGaDqIaSQ4WWpyyPYM-o2Jv0OjwGn8a00cryWnI1o3uPGfSvTekNrMXwBUuWq1WSTjfo&usqp=CAU")),
+                              image: AssetImage("assets/images/myProfilePhoto.jpeg"),
+                              /*image: NetworkImage(
+                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGaDqIaSQ4WWpyyPYM-o2Jv0OjwGn8a00cryWnI1o3uPGfSvTekNrMXwBUuWq1WSTjfo&usqp=CAU")*/),
                           color: lbackgroundclr,
                           borderRadius: BorderRadius.circular(15)),
                     ),
@@ -92,11 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: screenSize.height * 0.025,
                 ),
                 const Text(
-                  "Ne Sipariş vermek istersiniz?",
+                  "   Ne Sipariş vermek istersiniz?",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: whiteclr,
-                    fontSize: 21,
+                    fontSize: 18,
                   ),
                 ),
                 SizedBox(
@@ -107,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SizedBox(
                       height: screenSize.height * 0.065,
-                      width: screenSize.width * 0.785,
+                      width: screenSize.width * 0.941,
                       child: TextFormField(
                         onChanged: (value) {
                           filterSearchResults(value);
@@ -119,12 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             onPressed: () {
                               _searchController.clear();
                               filterSearchResults('');
-                            },
-                          ),
-                          prefixIcon: IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              // burad kaldim
                             },
                           ),
                           hintText: "Restorant veya yemek bul...",
@@ -140,18 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderSide: const BorderSide(color: Colors.grey),
                           ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      height: screenSize.height * 0.065,
-                      width: screenSize.width * 0.115,
-                      decoration: BoxDecoration(
-                        color: lbackgroundclr,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Icon(
-                        Icons.tune,
-                        color: whiteclr,
                       ),
                     ),
                   ],
@@ -418,15 +402,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            const Positioned(
+                             Positioned(
                               right: 0,
                               child: Padding(
                                   padding: EdgeInsets.all(6.0),
-                                  child: Icon(
+                                  child: IconButton(onPressed: (){
+                                    setState(() {
+                                      if(_iconColor==whiteclr)
+                                        {
+                                          _iconColor=Colors.red;
+                                          ScaffoldMessenger.of(context)
+                                          ..removeCurrentSnackBar()
+                                          ..showSnackBar(SnackBar(content: Text("Ürün Favoriye Eklendi")));
+                                        }
+                                      else{
+                                        _iconColor=whiteclr;
+                                        ScaffoldMessenger.of(context)
+                                          ..removeCurrentSnackBar()
+                                          ..showSnackBar(SnackBar(content: Text("Ürün Favoriden Çıkarıldı")));
+                                      }
+                                    });
+                                  }, icon: Icon(
                                     Icons.favorite_rounded,
                                     size: 25,
-                                    color: whiteclr,
-                                  )),
+                                    color: _iconColor,
+                                  ))),
                             )
                           ],
                         ),
