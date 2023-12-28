@@ -20,20 +20,18 @@ class MealBigDatabase {
 
   //veri tabani olusturma fonksiyonu
   Future _createDB(Database db, int version) async {
-    final idType =
-        'INTEGER PRIMARY KEY AUTOINCREMENT'; //otomatik artan integer identity
+    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     final textType = 'TEXT NOT NULL';
-    final intType = 'INTEGER NOT NULL';
 
     await db.execute('''
-  CREATE TABLE MealBigDatabase(
-  id $idType,
-  name $textType,
-  ratting $textType,
-  time $textType,
-  image $textType,
-  )
-  ''');
+      CREATE TABLE MealBigDatabase (
+      id $idType,
+      name $textType,
+      ratting $textType,
+      time $textType,
+      image $textType
+      )
+      ''');
     await db.insert(
         'MealBigDatabase',
         {
@@ -76,9 +74,10 @@ class MealBigDatabase {
   }
 
 //tabloya veri ekleme
-  Future<int> create(BigMeal info) async {
+  Future<int> create(BigMeal info, int selectedItemId) async {
     final db = await instance.database;
     final id = await db.insert('MealBigDatabase', info.toMap());
+    await db.insert('SelectedItems', {'selectedItemId': selectedItemId}, conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
 

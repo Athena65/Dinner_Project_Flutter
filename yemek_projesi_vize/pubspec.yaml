@@ -31,6 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite: ^2.3.0
+  get: ^4.6.5
+  flutter_neumorphic: ^3.0.3
+  animated_theme_switcher: ^2.0.1-nullsafety.0
 
 
 

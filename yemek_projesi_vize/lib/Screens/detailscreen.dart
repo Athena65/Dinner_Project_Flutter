@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:yemek_projesi_vize/Models/bigcontainermodel.dart';
+import 'package:yemek_projesi_vize/Models/bigcontainersqflite.dart';
+import 'package:yemek_projesi_vize/Models/database.dart';
 import 'package:yemek_projesi_vize/Models/smallcontainermodel.dart';
 import 'package:yemek_projesi_vize/Utilities/colors.dart';
 import 'package:yemek_projesi_vize/Utilities/constant.dart';
 
 class DetailScreen extends StatefulWidget {
   final DistInfo details;
-  final DispInfo2 detail;
+  final BigMeal detail;
+  final int selectedItemId;
 
-  const DetailScreen({super.key, required this.details, required this.detail});
+  const DetailScreen({super.key, required this.details, required this.detail,required this.selectedItemId});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  BigMeal? selectedBigMeal;
   int? _value = 1;
   int total = 0;
   int quantity = 1;
 
   @override
+  void initState(){
+    super.initState();
+    _loadBigMeal();
+  }
+  //Read fonksiyonuyla secilen urunun id'sine gore urunun goruntulenmesi
+  Future<void> _loadBigMeal() async
+  {
+    try{
+      final meal= await MealBigDatabase.instance.read(widget.selectedItemId);
+      setState(() {
+        selectedBigMeal=meal;
+      });
+
+    }
+    catch(e){
+      print('Secilen Urunu listelemede hata:${e}');
+    }
+  }
   Widget build(BuildContext context) {
     total = widget.details.totalPrice;
     Size sc = Utils().getScreenSize(); //ekran boyutu

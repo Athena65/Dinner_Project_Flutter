@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:yemek_projesi_vize/Models/bigcontainermodel.dart';
+import 'package:yemek_projesi_vize/Models/bigcontainersqflite.dart';
+import 'package:yemek_projesi_vize/Models/database.dart';
 import 'package:yemek_projesi_vize/Models/smallcontainermodel.dart';
+import 'package:yemek_projesi_vize/Screens/LoginPage.dart';
+import 'package:yemek_projesi_vize/Screens/ProfilePage.dart';
 import 'package:yemek_projesi_vize/Screens/detailscreen.dart';
 import 'package:yemek_projesi_vize/Utilities/colors.dart';
 import 'package:yemek_projesi_vize/Utilities/constant.dart';
@@ -14,25 +17,40 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Color _iconColor = whiteclr;
-  String sonuc="";
-  var items = <dynamic>[];
+  String sonuc = "";
+  var items = <BigMeal>[];
+  late List<BigMeal> filteredItems = [];
   @override
   void initState() {
-    items = BigCon;
     super.initState();
+    _getData();
+  }
+
+  Future<void> _getData() async {
+    try {
+      final meals = await MealBigDatabase.instance.readAll();
+      setState(() {
+        items = meals;
+        filteredItems = List.from(meals);
+      });
+    } catch (e) {
+      print("Veri tabanina ulaşmada ve verileri almada hata: $e");
+    }
   }
 
   void filterSearchResults(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        items = List.from(BigCon);
-      } else {
-        items = BigCon.where(
+    if (query.isEmpty) {
+      setState(() {
+        filteredItems = items;
+      });
+    } else {
+      setState(() {
+        filteredItems = items
+            .where(
                 (item) => item.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
-        //print(items);
-      }
-    });
+      });
+    }
   }
 
   final TextEditingController _searchController = TextEditingController();
@@ -51,6 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    IconButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                      LoginPage()));
+                    }, icon: Icon(Icons.exit_to_app)),
                     Container(
                       height: screenSize.height * 0.065,
                       width: screenSize.width * 0.005,
@@ -76,17 +98,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    Container(
-                      height: screenSize.height * 0.065,
-                      width: screenSize.width * 0.115,
-                      decoration: BoxDecoration(
-                          image: const DecorationImage(
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage()));
+
+                      },
+                      child: Container(
+                        height: screenSize.height * 0.065,
+                        width: screenSize.width * 0.115,
+                        decoration: BoxDecoration(
+                            image: const DecorationImage(
                               fit: BoxFit.cover,
-                              image: AssetImage("assets/images/myProfilePhoto.jpeg"),
+                              image:
+                                  AssetImage("assets/images/myProfilePhoto.jpeg"),
+                      
                               /*image: NetworkImage(
-                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGaDqIaSQ4WWpyyPYM-o2Jv0OjwGn8a00cryWnI1o3uPGfSvTekNrMXwBUuWq1WSTjfo&usqp=CAU")*/),
-                          color: lbackgroundclr,
-                          borderRadius: BorderRadius.circular(15)),
+                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGaDqIaSQ4WWpyyPYM-o2Jv0OjwGn8a00cryWnI1o3uPGfSvTekNrMXwBUuWq1WSTjfo&usqp=CAU")*/
+                            ),
+                            color: lbackgroundclr,
+                            borderRadius: BorderRadius.circular(15)),
+                      ),
                     ),
                   ],
                 ),
@@ -112,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: screenSize.width * 0.941,
                       child: TextFormField(
                         onChanged: (value) {
+                          print("Search text changed: $value");
                           filterSearchResults(value);
                         },
                         controller: _searchController,
@@ -120,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: Icon(Icons.clear),
                             onPressed: () {
                               _searchController.clear();
-                              filterSearchResults('');
+                              filterSearchResults("");
                             },
                           ),
                           hintText: "Restorant veya yemek bul...",
@@ -154,19 +186,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: InkWell(
-                          onTap: (() async{
-                           sonuc= await Navigator.push(
+                          onTap: (() async {
+                            sonuc = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: ((context) => DetailScreen(
                                       details: smallcon[index],
-                                      detail: BigCon[index],
+                                      detail: items[index],
+                                      selectedItemId: filteredItems[index].id,
                                     )),
                               ),
                             );
                             ScaffoldMessenger.of(context)
-                            ..removeCurrentSnackBar()
-                            ..showSnackBar(SnackBar(content: Text(sonuc)));
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(content: Text(sonuc)));
                           }),
                           child: Container(
                             width: screenSize.width * 0.22,
@@ -224,26 +257,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     shrinkWrap: true,
                     physics: const ScrollPhysics(),
                     scrollDirection: Axis.horizontal,
-                    itemCount: items.length,
+                    itemCount: filteredItems.length,
                     itemBuilder: ((context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(7.0),
                         child: Stack(
                           children: [
                             InkWell(
-                              onTap: (() async{
-                               sonuc = await Navigator.push(
+                              onTap: (() async {
+                                sonuc = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: ((context) => DetailScreen(
                                           details: smallcon[index],
-                                          detail: items[index],
+                                          detail: filteredItems[index],
+                                          selectedItemId: filteredItems[index].id,
                                         )),
                                   ),
                                 );
-                               ScaffoldMessenger.of(context)
-                               ..removeCurrentSnackBar()
-                               ..showSnackBar(SnackBar(content: Text(sonuc)));
+                                ScaffoldMessenger.of(context)
+                                  ..removeCurrentSnackBar()
+                                  ..showSnackBar(
+                                      SnackBar(content: Text(sonuc)));
                               }),
                               child: Container(
                                 width: screenSize.width * 0.65,
@@ -260,8 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image:
-                                              NetworkImage(items[index].image),
+                                          image: NetworkImage(
+                                              filteredItems[index].image),
                                         ),
                                         borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(15),
@@ -278,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                items[index].name,
+                                                filteredItems[index].name,
                                                 style: const TextStyle(
                                                     color: whiteclr,
                                                     fontSize: 17,
@@ -295,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    items[index].time,
+                                                    filteredItems[index].time,
                                                     style: const TextStyle(
                                                         fontSize: 15,
                                                         color: whiteclr),
@@ -315,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 size: 16,
                                               ),
                                               Text(
-                                                items[index].ratting,
+                                                filteredItems[index].ratting,
                                                 style: const TextStyle(
                                                     fontSize: 14.5,
                                                     color: whiteclr),
@@ -402,31 +437,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                             Positioned(
+                            Positioned(
                               right: 0,
                               child: Padding(
                                   padding: EdgeInsets.all(6.0),
-                                  child: IconButton(onPressed: (){
-                                    setState(() {
-                                      if(_iconColor==whiteclr)
-                                        {
-                                          _iconColor=Colors.red;
-                                          ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(content: Text("Ürün Favoriye Eklendi")));
-                                        }
-                                      else{
-                                        _iconColor=whiteclr;
-                                        ScaffoldMessenger.of(context)
-                                          ..removeCurrentSnackBar()
-                                          ..showSnackBar(SnackBar(content: Text("Ürün Favoriden Çıkarıldı")));
-                                      }
-                                    });
-                                  }, icon: Icon(
-                                    Icons.favorite_rounded,
-                                    size: 25,
-                                    color: _iconColor,
-                                  ))),
+                                  child: Column(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (_iconColor == whiteclr) {
+                                                _iconColor = Colors.red;
+                                                ScaffoldMessenger.of(context)
+                                                  ..removeCurrentSnackBar()
+                                                  ..showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "Ürün Favoriye Eklendi")));
+                                              } else {
+                                                _iconColor = whiteclr;
+                                                ScaffoldMessenger.of(context)
+                                                  ..removeCurrentSnackBar()
+                                                  ..showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "Ürün Favoriden Çıkarıldı")));
+                                              }
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.favorite_rounded,
+                                            size: 25,
+                                            color: _iconColor,
+                                          )),
+                                    ],
+                                  )),
                             )
                           ],
                         ),
