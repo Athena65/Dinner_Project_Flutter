@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+//profil resmi goruntusu duzeltme
 class ProfileWidget extends StatelessWidget {
   final String imagePath;
   final bool isEdit;

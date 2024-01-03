@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:yemek_projesi_vize/Models/User1.dart';
 import 'package:yemek_projesi_vize/Screens/homescreen.dart';
+import 'package:yemek_projesi_vize/Utilities/colors.dart';
 import 'package:yemek_projesi_vize/Utilities/profile_widget.dart';
+
+final Uri _url = Uri.parse("https://buraktamince.net.tr");
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -16,9 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final user1 = Users[0];
 
     return Scaffold(
-      appBar: AppBar(
-
-      ),
+      backgroundColor: backgroundclr,
       body: ListView(
         physics: BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16.0),
@@ -48,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
-            color: Colors.black,
+            color: primaryclr,
           ),
         ),
       ),
@@ -57,22 +59,41 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Text(
           user.email,
           style: TextStyle(
-            color: Colors.grey,
+            color: messageclr,
             fontSize: 16,
           ),
         ),
       ),
+      Text("About ",style: TextStyle(color: primaryclr,fontSize: 20),),
       const SizedBox(height: 8),
       Center(
-        child: Text(
-          user.about,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 16,
-            fontStyle: FontStyle.italic,
-          ),
+        child: Column(
+          children: [
+            Text(
+              user.about,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ),
       ),
+      SizedBox(
+        height: 30,
+      ),
+      Text("WebSite ",style: TextStyle(color: primaryclr,fontSize: 20),),
+      ElevatedButton(onPressed: _launchUrl, child: Text("${user.username} Web Sitesi"),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: messageclr,
+        foregroundColor:whiteclr,
+        shape:RoundedRectangleBorder(//koseleri yuvarlak yapma
+          borderRadius: BorderRadius.circular(30.0)
+        ),
+        minimumSize: Size(500, 40), //width,height
+
+      ),),
       SizedBox(
         height: 100,
       ),
@@ -83,6 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               "Cüzdan Kayıtlı",
               style: TextStyle(
+                color: messageclr,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -99,4 +121,12 @@ class _ProfilePageState extends State<ProfilePage> {
       )
     ],
   );
+  _launchUrl() async//url'i acma
+  {
+    if(!await launchUrl(_url))
+      {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$_url acilamiyor")));
+      }
+    await launchUrl(_url);
+  }
 }

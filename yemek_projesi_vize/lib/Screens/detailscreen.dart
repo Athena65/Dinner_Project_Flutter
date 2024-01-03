@@ -63,24 +63,6 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                     ),
                   ),
-                  Positioned(
-                    right: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Container(
-                        height: sc.height * 0.043,
-                        width: sc.width * 0.1,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: const Color(0xff757283)),
-                        child: const Center(
-                            child: Icon(
-                          Icons.favorite_rounded,
-                          color: whiteclr,
-                        )),
-                      ),
-                    ),
-                  ),
                 ],
               ),
               Padding(
@@ -365,7 +347,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             Navigator.pop(context, 'Odeme Basarili');
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: primaryclr,
+                            backgroundColor: messageclr,
                           ),
                           child: Container(
                             height: sc.height * 0.06,

@@ -18,6 +18,6 @@ List Users = [
       email: "burak@burak.com",
     about: "He went Kartal Anadolu Lisesi. He was born in Sultanbeyli which small city of Istanbul. He works hard in his lectures because he has discipline and self motivation."
       "And He loves coding Back-End with .NET CORE WEB API and MVC. And He dreams to be .NET Developer in future.",
-    password: "123456789"
+    password: "1234"
   )
 ];

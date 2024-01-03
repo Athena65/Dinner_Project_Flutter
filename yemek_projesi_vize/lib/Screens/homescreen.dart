@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Set<int> favoriteItemIds = Set<int>(); //urunun favori ekli mi degil mi kontrolu
   Color _iconColor = whiteclr;
   String sonuc = "";
   var items = <BigMeal>[];
@@ -69,10 +70,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                      LoginPage()));
-                    }, icon: Icon(Icons.exit_to_app)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
+                        icon: Icon(Icons.exit_to_app)),
                     Container(
                       height: screenSize.height * 0.065,
                       width: screenSize.width * 0.005,
@@ -82,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text(
                           "Şuraya Teslim et",
                           style: TextStyle(
-                              color: whiteclr,
+                              color: primaryclr,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
                         ),
@@ -100,8 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage()));
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage()));
                       },
                       child: Container(
                         height: screenSize.height * 0.065,
@@ -109,11 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                             image: const DecorationImage(
                               fit: BoxFit.cover,
-                              image:
-                                  AssetImage("assets/images/myProfilePhoto.jpeg"),
-                      
-                              /*image: NetworkImage(
-                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGaDqIaSQ4WWpyyPYM-o2Jv0OjwGn8a00cryWnI1o3uPGfSvTekNrMXwBUuWq1WSTjfo&usqp=CAU")*/
+                              image: AssetImage(
+                                  "assets/images/myProfilePhoto.jpeg"),
                             ),
                             color: lbackgroundclr,
                             borderRadius: BorderRadius.circular(15)),
@@ -140,12 +144,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SizedBox(
                       height: screenSize.height * 0.065,
-                      width: screenSize.width * 0.941,
+                      width: screenSize.width * 0.931,
                       child: TextFormField(
                         onChanged: (value) {
-                          print("Search text changed: $value");
                           filterSearchResults(value);
-                        },
+                        },style: TextStyle(color:primaryclr),
                         controller: _searchController,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
@@ -271,7 +274,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: ((context) => DetailScreen(
                                           details: smallcon[index],
                                           detail: filteredItems[index],
-                                          selectedItemId: filteredItems[index].id,
+                                          selectedItemId:
+                                              filteredItems[index].id,
                                         )),
                                   ),
                                 );
@@ -444,29 +448,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Column(
                                     children: [
                                       IconButton(
-                                          onPressed: () {
+                                          onPressed: () {//icon tiklandiginda
                                             setState(() {
-                                              if (_iconColor == whiteclr) {
-                                                _iconColor = Colors.red;
-                                                ScaffoldMessenger.of(context)
-                                                  ..removeCurrentSnackBar()
-                                                  ..showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "Ürün Favoriye Eklendi")));
+                                              int itemId =
+                                                  filteredItems[index].id;
+                                              if (favoriteItemIds
+                                                  .contains(itemId)) {
+                                                favoriteItemIds.remove(itemId);
+                                                //urun zaten varsa listede cikarir.
                                               } else {
-                                                _iconColor = whiteclr;
-                                                ScaffoldMessenger.of(context)
-                                                  ..removeCurrentSnackBar()
-                                                  ..showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "Ürün Favoriden Çıkarıldı")));
-                                              }
+                                                favoriteItemIds.add(itemId);
+                                              }//urunun id'sini favori item listesine ekler
+                                              ScaffoldMessenger.of(context)
+                                                ..removeCurrentSnackBar()
+                                                ..showSnackBar(SnackBar(
+                                                    content: Text(favoriteItemIds
+                                                            .contains(itemId)
+                                                        ? "Ürün Favoriye Eklendi"//tennary operator
+                                                    // (kisa if else)
+                                                        : "Ürün Favoriden Çıkarıldı")));
                                             });
                                           },
                                           icon: Icon(
                                             Icons.favorite_rounded,
                                             size: 25,
-                                            color: _iconColor,
+                                            color: favoriteItemIds.contains(//tennary operator
+                                                    filteredItems[index].id)
+                                                ? Colors.red //urunun id'si listede varsa
+                                                : _iconColor, //yoksa(else)
                                           )),
                                     ],
                                   )),

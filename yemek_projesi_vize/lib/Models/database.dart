@@ -32,6 +32,7 @@ class MealBigDatabase {
       image $textType
       )
       ''');
+    //veri ekleme
     await db.insert(
         'MealBigDatabase',
         {
